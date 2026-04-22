@@ -1,0 +1,29 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3>Importar Dados - {{ project.name }}</h3>
+            </div>
+            <div class="card-body">
+                <div class="p-3 mb-4 bg-light border rounded">
+                    <h5>1. Baixe o Modelo</h5>
+                    <p>Escolha o formato de sua preferência:</p>
+                    <a href="{% url 'download_template' %}?format=excel" class="btn btn-outline-primary">Excel (.xlsx)</a>
+                    <a href="{% url 'download_template' %}?format=csv" class="btn btn-outline-secondary">CSV (.csv)</a>
+                </div>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <h5>2. Envie o Arquivo Preenchido</h5>
+                        <input type="file" name="excel_file" class="form-control" accept=".xlsx, .csv" required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Iniciar Importação</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

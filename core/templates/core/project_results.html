@@ -1,0 +1,51 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Resultados: {{ project.name }}</h2>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar ao Painel</a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body bg-dark text-white rounded">
+            <h4 class="mb-0">Emergia Total: {{ total_emergy|floatformat:2 }} seJ</h4>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Detalhamento do Inventário</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Recurso</th>
+                        <th>Processo</th>
+                        <th>Quantidade</th>
+                        <th>Unidade</th>
+                        <th>UEV (Transformidade)</th>
+                        <th>Emergia (seJ)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.resource_name }}</td>
+                        <td>{{ item.process.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.unit }}</td>
+                        <td>{{ item.applied_uev }}</td>
+                        <td>{{ item.calculated_emergy|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">Nenhum dado encontrado para este projeto.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
