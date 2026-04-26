@@ -1,13 +1,22 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class Institution(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    institution = models.CharField(max_length=255, blank=True)
+    institution = models.ForeignKey(Institution, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         verbose_name = "User Profile"
         verbose_name_plural = "User Profiles"
+
+    def __str__(self):
+        return self.user.username
 
 class EmergyReference(models.Model):
     resource_name = models.CharField(max_length=150, unique=True)

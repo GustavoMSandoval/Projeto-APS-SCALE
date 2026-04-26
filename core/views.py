@@ -7,7 +7,7 @@ import pandas as pd
 import csv
 
 from .forms import UserRegisterForm, ProjectForm
-from .models import Project, InventoryItem
+from .models import Project, InventoryItem, UserProfile
 from .services import import_data
 
 # --- AUTENTICAÇÃO ---
@@ -27,7 +27,18 @@ def register(request):
 # --- DASHBOARD ---
 @login_required
 def dashboard(request):
-    projects = Project.objects.filter(user=request.user)
+    try:
+        user_profile = request.user.userprofile
+    except UserProfile.DoesNotExist:
+        user_profile = UserProfile.objects.create(user=request.user)
+
+    if user_profile.institution:
+        projects = Project.objects.filter(
+            user__userprofile__institution=user_profile.institution
+        ).select_related('user')
+    else:
+        projects = Project.objects.filter(user=request.user)
+
     return render(request, 'core/dashboard.html', {'projects': projects})
 
 @login_required

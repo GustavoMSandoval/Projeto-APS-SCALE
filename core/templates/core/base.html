@@ -13,10 +13,10 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'dashboard' %}">SCALE System</a>
+            <a class="navbar-brand" href="{% url 'dashboard' %}">Dashboard</a>
             <div class="navbar-nav ms-auto">
                 {% if user.is_authenticated %}
-                    <span class="nav-link text-light">Welcome, {{ user.username }}</span>
+                    <span class="nav-link text-light">Olá, {{ user.username }}</span>
                     <form action="{% url 'logout' %}" method="post" class="d-inline">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-link nav-link">Logout</button>

@@ -2,17 +2,46 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-header"><h3>New Project</h3></div>
-            <div class="card-body">
+        <div class="card shadow border-0">
+            <div class="card-header bg-success text-white text-center py-3">
+                <h3 class="mb-0">Novo Projeto</h3>
+            </div>
+            <div class="card-body p-4">
                 <form method="post">
                     {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary">Create Project</button>
-                    <a href="{% url 'dashboard' %}" class="btn btn-link">Cancel</a>
+                    
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            {% if field.name == 'name' %}Nome do Projeto
+                            {% elif field.name == 'description' %}Descrição
+                            {% else %}{{ field.label }}{% endif %}
+                        </label>
+                        {{ field }}
+                        {% if field.help_text %}
+                        <div class="form-text text-muted">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% for error in field.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success py-2">Criar Projeto</button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.querySelectorAll('input, textarea, select').forEach(input => {
+        if (input.type !== 'submit' && input.type !== 'hidden') {
+            input.classList.add('form-control');
+        }
+    });
+</script>
 {% endblock %}
