@@ -1,0 +1,57 @@
+{% extends 'panel_admin/base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Editar Usuário</h2>
+        <a href="{% url 'users' %}" class="btn btn-secondary">⬅ Voltar</a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Usuário</label>
+                    <input type="text" name="username" class="form-control"
+                           value="{{ user.username }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control"
+                           value="{{ user.email }}">
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nome</label>
+                        <input type="text" name="first_name" class="form-control"
+                               value="{{ user.first_name }}">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Sobrenome</label>
+                        <input type="text" name="last_name" class="form-control"
+                               value="{{ user.last_name }}">
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-success">
+                        💾 Salvar Alterações
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

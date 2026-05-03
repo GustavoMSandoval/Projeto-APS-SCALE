@@ -1,0 +1,43 @@
+{% extends 'panel_admin/base.html' %}
+
+{% block content %}
+
+<h2>{% if item %}Editar{% else %}Criar{% endif %} Referência</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label>Recurso</label>
+        <input type="text" name="resource_name" class="form-control"
+               value="{{ item.resource_name|default:'' }}">
+    </div>
+
+    <div class="mb-3">
+        <label>Unidade</label>
+        <input type="text" name="unit" class="form-control"
+               value="{{ item.unit|default:'' }}">
+    </div>
+    
+    <div class="mb-3">
+        <label>UEV</label>
+        <input type="text" name="uev_value" class="form-control"
+               value="{{ item.uev_value|default:'' }}">
+    </div>
+
+    <div class="mb-3">
+        <label>Fonte</label>
+        <input type="text" name="source" class="form-control"
+                value="{{ item.source|default:'' }}">
+    </div>
+
+    <div class="mb-3">
+        <label>Categoria</label>
+        <input type="text" name="category" class="form-control"
+                value="{{ item.category|default:'' }}">
+    </div>
+
+    <button type="submit">Salvar</button>
+</form>
+<a href="/admin-panel/emergy/">Voltar</a>
+{% endblock %}

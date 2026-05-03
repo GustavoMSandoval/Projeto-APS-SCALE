@@ -1,0 +1,42 @@
+{% extends 'panel_admin/base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="fw-bold mb-4">Editar Projeto</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label>Nome</label>
+            <input type="text" name="name" class="form-control"
+                   value="{{ project.name }}">
+        </div>
+
+        <div class="mb-3">
+            <label>Descrição</label>
+            <textarea name="description" class="form-control">
+                {{ project.description }}
+            </textarea>
+        </div>
+
+        <div class="mb-3">
+            <label>Usuário</label>
+            <select name="user" class="form-control">
+                {% for u in users %}
+                    <option value="{{ u.id }}"
+                        {% if u.id == project.user.id %}selected{% endif %}>
+                        {{ u.username }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button class="btn btn-success">Salvar</button>
+    </form>
+
+</div>
+
+{% endblock %}

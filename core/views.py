@@ -5,7 +5,8 @@ from django.http import HttpResponse
 from io import BytesIO
 import pandas as pd
 import csv
-
+from django.contrib.auth import logout, authenticate, login
+from .decorators import user_only
 from .forms import UserRegisterForm, ProjectForm
 from .models import Project, InventoryItem, UserProfile
 from .services import import_data
@@ -24,8 +25,30 @@ def register(request):
         form = UserRegisterForm()
     return render(request, 'core/register.html', {'form': form})
 
+def login_view(request):
+    if request.method == 'POST':
+        user = authenticate(
+            request,
+            username=request.POST.get('username'),
+            password=request.POST.get('password')
+        )
+
+        if user:
+            login(request, user)
+
+            if user.is_staff:
+                return redirect('/admin-panel/')
+            else:
+                return redirect('dashboard')
+
+        else:
+            messages.error(request, "Usuário ou senha inválidos")
+
+    return render(request, 'core/login.html')
+
 # --- DASHBOARD ---
 @login_required
+@user_only
 def dashboard(request):
     try:
         user_profile = request.user.userprofile
@@ -42,6 +65,7 @@ def dashboard(request):
     return render(request, 'core/dashboard.html', {'projects': projects})
 
 @login_required
+@user_only
 def create_project(request):
     if request.method == 'POST':
         form = ProjectForm(request.POST)
@@ -56,6 +80,7 @@ def create_project(request):
 
 # --- UPLOAD ÚNICO ---
 @login_required
+@user_only
 def upload_inventory(request, project_id):
     project = get_object_or_404(Project, id=project_id, user=request.user)
     if request.method == 'POST' and request.FILES.get('excel_file'):
@@ -69,6 +94,7 @@ def upload_inventory(request, project_id):
 
 # --- DOWNLOAD ÚNICO (Detecta formato via URL) ---
 @login_required
+@user_only
 def download_template(request):
     fmt = request.GET.get('format', 'excel')
     cols = ['Resource', 'Quantity', 'Unit', 'Process']
@@ -89,6 +115,7 @@ def download_template(request):
     return response
 
 @login_required
+@user_only
 def project_results(request, project_id):
     project = get_object_or_404(Project, id=project_id, user=request.user)
     
@@ -108,3 +135,7 @@ def project_results(request, project_id):
         'total_emergy': total_emergy,
     }
     return render(request, 'core/project_results.html', context)
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')

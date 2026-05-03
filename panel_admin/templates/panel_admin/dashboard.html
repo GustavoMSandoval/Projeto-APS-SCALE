@@ -1,0 +1,71 @@
+{% extends 'panel_admin/base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h1 class="mb-4 fw-bold">Admin SCALE</h1>
+    <p class="text-muted">Gerenciamento do sistema</p>
+
+    <div class="row g-4 mt-3">
+
+        <!-- USERS -->
+        <div class="col-md-4">
+            <a href="{% url 'users' %}" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 admin-card">
+                    <div class="card-body text-center">
+                        <div class="icon mb-3">👤</div>
+                        <h5 class="card-title">Usuários</h5>
+                        <p class="text-muted">Gerenciar contas</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- EMERGY -->
+        <div class="col-md-4">
+            <a href="{% url 'emergy_list' %}" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 admin-card">
+                    <div class="card-body text-center">
+                        <div class="icon mb-3">⚡</div>
+                        <h5 class="card-title">Referências</h5>
+                        <p class="text-muted">Base de emergia</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- PROJECTS -->
+        <div class="col-md-4">
+            <a href="{% url 'project' %}" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 admin-card">
+                    <div class="card-body text-center">
+                        <div class="icon mb-3">📁</div>
+                        <h5 class="card-title">Projetos</h5>
+                        <p class="text-muted">Visualizar projetos</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+.admin-card {
+    transition: 0.3s;
+    border-radius: 15px;
+}
+
+.admin-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.15);
+}
+
+.icon {
+    font-size: 40px;
+}
+</style>
+
+{% endblock %}
