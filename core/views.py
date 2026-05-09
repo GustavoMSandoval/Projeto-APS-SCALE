@@ -10,6 +10,7 @@ from .decorators import user_only
 from .forms import UserRegisterForm, ProjectForm
 from .models import Project, InventoryItem, UserProfile
 from .services import import_data
+from django.contrib.auth.models import User
 
 # --- AUTENTICAÇÃO ---
 def register(request):
@@ -139,3 +140,41 @@ def project_results(request, project_id):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+def setup_admin(request):
+
+    # se já existe admin, bloqueia acesso
+    if User.objects.filter(is_superuser=True).exists():
+        return redirect('/login/')
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if password != confirm_password:
+            messages.error(request, "As senhas não coincidem.")
+            return redirect('setup_admin')
+
+        User.objects.create_superuser(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        messages.success(request, "Administrador criado com sucesso!")
+        return redirect('/login/')
+
+    return render(request, 'core/setup_admin.html')
+
+def check_admin(request):
+
+    if User.objects.filter(is_superuser=True).exists():
+        return HttpResponse(
+            "http://127.0.0.1:8000/login/"
+        )
+
+    return HttpResponse(
+        "http://127.0.0.1:8000/setup/"
+    )

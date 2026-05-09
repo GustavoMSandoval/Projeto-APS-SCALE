@@ -18,9 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from core import views
+from core.views import setup_admin, check_admin
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('setup/', setup_admin, name='setup_admin'),
+    path('check-admin/', check_admin, name='check_admin'),
+    
     path('admin-panel/', include('panel_admin.urls')),
 
     # Auth
