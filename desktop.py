@@ -1,10 +1,11 @@
+import os
+import sys
 import threading
-import subprocess
 import time
 import requests
 import webview
-import os
-import sys
+
+from django.core.management import execute_from_command_line
 
 
 DJANGO_URL = "http://127.0.0.1:8000"
@@ -12,11 +13,11 @@ DJANGO_URL = "http://127.0.0.1:8000"
 
 def resource_path(relative_path):
     """
-    Resolve caminhos no PyInstaller
+    Resolve caminhos do PyInstaller
     """
     try:
         base_path = sys._MEIPASS
-    except Exception:
+    except AttributeError:
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
@@ -24,16 +25,23 @@ def resource_path(relative_path):
 
 def start_django():
     """
-    Inicia o servidor Django
+    Inicia Django internamente
     """
-    manage_path = resource_path("manage.py")
+    base_dir = resource_path(".")
 
-    subprocess.Popen(
-        [sys.executable, manage_path, "runserver"],
-        cwd=resource_path("."),
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
+    os.chdir(base_dir)
+
+    os.environ.setdefault(
+        "DJANGO_SETTINGS_MODULE",
+        "scale_system.settings"
     )
+
+    execute_from_command_line([
+        "manage.py",
+        "runserver",
+        "127.0.0.1:8000",
+        "--noreload"
+    ])
 
 
 # inicia Django em thread separada
@@ -45,15 +53,14 @@ django_thread = threading.Thread(
 django_thread.start()
 
 
-# espera servidor iniciar
+# espera servidor subir
 server_started = False
 
-for _ in range(20):
+for _ in range(30):
     try:
         requests.get(DJANGO_URL)
         server_started = True
         break
-
     except:
         time.sleep(1)
 
@@ -64,7 +71,7 @@ if not server_started:
     )
 
 
-# verifica se já existe admin
+# verifica admin
 try:
     response = requests.get(
         f"{DJANGO_URL}/check-admin/"
@@ -76,7 +83,7 @@ except:
     url = f"{DJANGO_URL}/login/"
 
 
-# cria janela desktop
+# abre janela desktop
 webview.create_window(
     title="SCALE System",
     url=url,
