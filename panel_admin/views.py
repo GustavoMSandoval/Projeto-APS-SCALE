@@ -53,7 +53,7 @@ def user_edit(request, id):
         user.save()
         messages.success(request, "Usuário atualizado com sucesso!")
 
-        return redirect('user_list')
+        return redirect('users')
 
     return render(request, 'panel_admin/user_form.html', {'user': user})
 
