@@ -4,7 +4,13 @@
 
 <div class="container mt-5">
 
-    <h2 class="fw-bold mb-4">Editar Projeto</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Editar Projeto</h2>
+
+        <a href="{% url 'project' %}" class="btn btn-secondary">
+            ⬅ Voltar
+        </a>
+    </div>
 
     <form method="POST">
         {% csrf_token %}
@@ -17,9 +23,7 @@
 
         <div class="mb-3">
             <label>Descrição</label>
-            <textarea name="description" class="form-control">
-                {{ project.description }}
-            </textarea>
+            <textarea name="description" class="form-control">{{ project.description }}</textarea>
         </div>
 
         <div class="mb-3">
@@ -34,7 +38,9 @@
             </select>
         </div>
 
-        <button class="btn btn-success">Salvar</button>
+        <button class="btn btn-success">
+            💾 Salvar
+        </button>
     </form>
 
 </div>

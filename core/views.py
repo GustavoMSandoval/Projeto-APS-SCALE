@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from io import BytesIO
 import pandas as pd
 import csv
@@ -11,6 +11,7 @@ from .forms import UserRegisterForm, ProjectForm
 from .models import Project, InventoryItem, UserProfile
 from .services import import_data
 from django.contrib.auth.models import User
+from pathlib import Path
 
 # --- AUTENTICAÇÃO ---
 def register(request):
@@ -98,22 +99,28 @@ def upload_inventory(request, project_id):
 @user_only
 def download_template(request):
     fmt = request.GET.get('format', 'excel')
+
     cols = ['Resource', 'Quantity', 'Unit', 'Process']
     data = [['Energia Solar', 1500000, 'J', 'Natureza']]
     df = pd.DataFrame(data, columns=cols)
 
+    # pasta Downloads do usuário
+    downloads = Path.home() / "Downloads"
+
     if fmt == 'csv':
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=template_scale.csv'
-        df.to_csv(path_or_buf=response, index=False)
+        file_path = downloads / 'template_scale.csv'
+        df.to_csv(file_path, index=False)
+
     else:
-        output = BytesIO()
-        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        file_path = downloads / 'template_scale.xlsx'
+
+        with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
             df.to_excel(writer, index=False)
-        response = HttpResponse(output.getvalue(), content_type='application/vnd.ms-excel')
-        response['Content-Disposition'] = 'attachment; filename=template_scale.xlsx'
-    
-    return response
+
+    return JsonResponse({
+        'success': True,
+        'path': str(file_path)
+    })
 
 @login_required
 @user_only

@@ -10,8 +10,8 @@
                 <div class="p-3 mb-4 bg-light border rounded">
                     <h5>1. Baixe o Modelo</h5>
                     <p>Escolha o formato de sua preferência:</p>
-                    <a href="{% url 'download_template' %}?format=excel" class="btn btn-outline-primary">Excel (.xlsx)</a>
-                    <a href="{% url 'download_template' %}?format=csv" class="btn btn-outline-secondary">CSV (.csv)</a>
+                    <button type="button" onclick="baixarTemplate('excel')" class="btn btn-outline-primary"> Excel (.xlsx) </button>
+                    <button type="button" onclick="baixarTemplate('csv')" class="btn btn-outline-secondary"> CSV (.csv) </button>
                 </div>
 
                 <form method="post" enctype="multipart/form-data">
@@ -26,4 +26,18 @@
         </div>
     </div>
 </div>
+
+<script>
+function baixarTemplate(formato) {
+    fetch(`/download-template/?format=${formato}`)
+        .then(response => response.json())
+        .then(data => {
+            alert("Arquivo salvo em:\n" + data.path);
+        })
+        .catch(error => {
+            console.error(error);
+            alert("Erro ao baixar arquivo.");
+        });
+}
+</script>
 {% endblock %}
