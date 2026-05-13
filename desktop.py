@@ -42,6 +42,13 @@ def start_django():
         "scale_system.settings"
     )
 
+    # cria banco/tabelas automaticamente
+    execute_from_command_line([
+        "manage.py",
+        "migrate"
+    ])
+
+    # inicia servidor
     execute_from_command_line([
         "manage.py",
         "runserver",
