@@ -27,7 +27,13 @@ def start_django():
     """
     Inicia Django internamente
     """
-    base_dir = resource_path(".")
+
+    if getattr(sys, 'frozen', False):
+        base_dir = sys._MEIPASS
+    else:
+        base_dir = os.path.dirname(
+            os.path.abspath(__file__)
+        )
 
     os.chdir(base_dir)
 
