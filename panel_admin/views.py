@@ -12,7 +12,6 @@ from core.models import (
     InventoryItem,
     CalculationResult,
     ImportLog,
-    Institution
 )
 
 from .forms import EmergyReferenceForm
@@ -180,7 +179,6 @@ def full_data_overview(request):
         'items': InventoryItem.objects.all(),
         'results': CalculationResult.objects.all(),
         'logs': ImportLog.objects.all(),
-        'institutions': Institution.objects.all(),
     }
 
     return render(request, 'panel_admin/full_data.html', context)

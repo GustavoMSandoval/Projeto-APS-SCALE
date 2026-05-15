@@ -12,9 +12,25 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+if getattr(sys, 'frozen', False):
+    # Onde o código está (estáticos, templates, apps)
+    BASE_DIR = Path(sys._MEIPASS) 
+else:
+    BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Caminho APENAS para o banco de dados
+APP_DATA = os.path.join(os.environ["LOCALAPPDATA"], "SCALE")
+os.makedirs(APP_DATA, exist_ok=True)
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(APP_DATA, 'db.sqlite3'), # BANCO NO APPDATA
+    }
+}
 
 
 # Quick-start development settings - unsuitable for production
@@ -75,12 +91,14 @@ WSGI_APPLICATION = 'scale_system.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-APP_DATA = os.path.join(
-    os.getenv('LOCALAPPDATA'),
-    'SCALE'
-)
+APP_DATA = os.path.join(os.getenv('LOCALAPPDATA'), 'SCALE')
 
-os.makedirs(APP_DATA, exist_ok=True)
+try:
+    if not os.path.exists(APP_DATA):
+        os.makedirs(APP_DATA, exist_ok=True)
+except Exception as e:
+    # Caso falhe (raro no AppData), ele usa a pasta do próprio executável como backup
+    APP_DATA = os.path.dirname(sys.executable) if getattr(sys, 'frozen', False) else BASE_DIR
 
 DATABASES = {
     'default': {
@@ -125,6 +143,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
