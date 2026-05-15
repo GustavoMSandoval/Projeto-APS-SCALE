@@ -32,12 +32,7 @@ def dashboard(request):
     except UserProfile.DoesNotExist:
         user_profile = UserProfile.objects.create(user=request.user)
 
-    if user_profile.institution:
-        projects = Project.objects.filter(
-            user__userprofile__institution=user_profile.institution
-        ).select_related('user')
-    else:
-        projects = Project.objects.filter(user=request.user)
+    projects = Project.objects.filter(user=request.user)
 
     return render(request, 'core/dashboard.html', {'projects': projects})
 
